@@ -174,6 +174,14 @@ def showEnergySavings(clusterList,clusterSize):
     autolabel(bloc[2])
     autolabel(bloc[3])
     plt.show()
+
+def percentageSavings(clusterList,clusterSize):
+    for i in range(clusterSize):
+        CWSbtuSavings = (clusterList[i].randCWSBTU-clusterList[i].minCWSBTU)*100/clusterList[i].randCWSBTU
+        steamBTUSavings = (clusterList[i].randSteamBTU-clusterList[i].minSteamBTU)*100/clusterList[i].randSteamBTU
+        OverallSavings = (clusterList[i].randCWSBTU+clusterList[i].randSteamBTU-clusterList[i].minCWSBTU-clusterList[i].minSteamBTU)*100/(clusterList[i].randCWSBTU+clusterList[i].randSteamBTU)
+        print ("Savings for cluster "+str(i+1)+" is CWSBTUs: "+str(CWSbtuSavings)+" steamBTUs "+str(steamBTUSavings)+" OverallSavings "+str(OverallSavings))
+        
        
 
 #Getting the data        
@@ -197,19 +205,19 @@ matrix = np.matrix(mat)
 
 #Performing hierarchical Clustering
 Z = linkage(matrix, 'ward')
-max_d = 55# Not used right now
-clusterSize=7
+max_d = 30# Not used right now
+clusterSize=6
 labels = fcluster(Z, clusterSize, criterion='maxclust')
-if False:
-    # calculate full dendrogram
-    plt.figure(figsize=(25, 10))
-    plt.title('Hierarchical Clustering Dendrogram')
-    plt.xlabel('sample index')
-    plt.ylabel('distance')
-    dendrogram(
+if True:
+    fancy_dendrogram(
         Z,
-        leaf_rotation=90.,  # rotates the x axis labels
-        leaf_font_size=8.,  # font size for the x axis label
+        truncate_mode='lastp',
+        p=12,
+        leaf_rotation=90.,
+        leaf_font_size=12.,
+        show_contracted=True,
+        annotate_above=10,
+        max_d=max_d,  # plot a horizontal cut-off line
     )
     plt.show()
 
@@ -233,5 +241,9 @@ if False:
     showClusterModel(clusterList,clusterSize) #works for upto 9 clusters
 
 #Plotting the energy Savings
-if True:
+if False:
     showEnergySavings(clusterList,clusterSize)
+
+#Percentage Savings
+if False:
+    percentageSavings(clusterList,clusterSize)
